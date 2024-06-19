@@ -5,11 +5,11 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import random
-
+import os
 # Funkcija za slanje emaila
 def send_email(to_address, subject, body):
-    from_address = "marko.maki.zlatanov@gmail.com"
-    password = "your_password"  # Unesite lozinku za vaš email
+    from_address = "m08123748@gmail.com"
+    password = "projekat"  # Unesite lozinku za vaš email
 
     # Kreiraj email poruku
     msg = MIMEMultipart()
@@ -20,7 +20,8 @@ def send_email(to_address, subject, body):
 
     try:
         # Poveži se sa SMTP serverom i pošalji email
-        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server = smtplib.SMTP('smtp@gmail.com', 587)
+        server.set_debuglevel(1)
         server.starttls()
         server.login(from_address, password)
         server.sendmail(from_address, to_address, msg.as_string())
@@ -30,12 +31,12 @@ def send_email(to_address, subject, body):
         print(f'Greška pri slanju emaila na {to_address}: {e}')
 
 # Učitaj podatke iz Excel tabele
-file_path = 'Marko.xlsx'  # Unesite putanju do vaše Excel datoteke
-df = pd.read_excel(file_path)
+file_path = r'C:\Users\marko\Desktop\projekat\projekat.xlsx'  # Unesite putanju do vaše Excel datoteke
+df = pd.read_excel(file_path,engine='openpyxl')
 
 # Pod pretpostavkom da se email adrese nalaze u koloni 'A'
 email_column = 'A'
-emails = df[email_column].dropna().tolist()
+emails = df.iloc[:, 0].dropna().tolist()
 
 # Definiši niz poruka
 messages = [
@@ -59,3 +60,5 @@ for email in emails:
     # Izaberi nasumičnu poruku iz niza
     body = random.choice(messages)
     send_email(email, subject, body)
+
+
